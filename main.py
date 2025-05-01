@@ -10,21 +10,13 @@ from stable_baselines3.common.vec_env import(
     VecTransposeImage,
 )
 
-def wrap_deepmind_retro(env):
-    """
-    Configure environment for retro games, using config similar to DeepMind-style Atari in openai/baseline's wrap_deepmind
-    """
-    env = WarpFrame(env)
-    env = ClipRewardEnv(env)
-    return env
-
-def make_env():
-    env = retro.make("Airstriker-Genesis")
-    env = wrap_deepmind_retro(env)
-    return env
 
 
-venv = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env] * 8), n_stack=4))
+'''
+env = make_env()
+obs = env.reset()
+print(make_env())
+venv = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env] * 3), n_stack=4))
 
 model = PPO(
         policy="CnnPolicy",
@@ -40,3 +32,4 @@ model = PPO(
         verbose=1,
     )
 summary(model)
+'''
