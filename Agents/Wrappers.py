@@ -28,3 +28,15 @@ class NoProgressPenaltyWrapper(Wrapper):
             info["no_progress_penalty"] = False
 
         return obs, reward, terminated, truncated, info
+    
+class OneUpWrapper(Wrapper):
+    def __init__(self,env):
+        super().__init__(env)
+        self.reward = 0
+        self.steps_past_reward = 0
+    
+    def step(self, action):
+        obs, reward, terminated, truncated, info = self.env.step(action)
+
+
+        return obs, reward, terminated, truncated, info

@@ -10,19 +10,19 @@ from Wrappers import NoProgressPenaltyWrapper
 def make_env():
     def _init():
         env = retro.make(game='SuperMarioWorld-Snes',state='YoshiIsland2',scenario='SMW')
-        env = NoProgressPenaltyWrapper(env,timeout=2000)
+        env = NoProgressPenaltyWrapper(env,timeout=2500)
         return env
     return _init
 def main():
-    venv = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env()] * 6), n_stack=4))
+    venv = VecTransposeImage(VecFrameStack(SubprocVecEnv([make_env()] * 12), n_stack=6))
 
     model = PPO(
             policy="CnnPolicy",
             env=venv,
-            learning_rate=lambda f: f * 2.5e-3,
-            n_steps=256,
-            batch_size=32,
-            n_epochs=4,
+            learning_rate=lambda f: f * 2.5e-1,
+            n_steps=128,
+            batch_size=64,
+            n_epochs=10,
             gamma=0.99,
             gae_lambda=0.95,
             clip_range=0.1,
@@ -30,15 +30,15 @@ def main():
             verbose=1,
         )
 
-    model.learn(total_timesteps = 100000)
-    model.save("ppo_smb")
+    model.learn(total_timesteps = 4000000)
+    model.save("ppo_smbtwo")
 
     obs = venv.reset()
 
 if __name__ == "__main__":
     main()
 '''
-while True:
+while True: 
     action, _states = model.predict(obs)
     obs, rewards, dones, info = venv.step(action)
     print(obs,rewards,dones,info)
