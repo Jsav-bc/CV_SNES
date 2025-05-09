@@ -1,13 +1,15 @@
 import os
+import numpy as np
 import imageio
 import torch
 import torchvision
 import torchvision.transforms
 import cv2 
 
-folder_path = "/home/jordan/boot/snesai/CV_SNES/Games_States/0.5222159894470562"
+## COULD RESTRUCT INTO A CLASS TO PULL SAMPLES AT RUNTIME
+folder_path = "xxxxxxxx"
 frame_stack_len = 6
-
+p_fold = folder_path.split('/')[-1]
 ifiles = []
 
 for f in os.listdir(folder_path):
@@ -18,10 +20,7 @@ for f in os.listdir(folder_path):
     ifiles.append(i_file)
 image_files = sorted(ifiles,key=lambda x: x['sequ'])
 
-framestacks_lib = {
-    'run_id': '',
-    'frame_seq': []
-}
+framestacks_ls = []
 framestacks = []
 
 for i in image_files:
@@ -37,4 +36,12 @@ for i in image_files:
     framestacks.append(f_stack)
     
 
-print(framestacks)
+for framestack in framestacks:
+    framestacks_lib = {
+    'event': p_fold,
+    'run_id': framestack,
+    'frame_seq': [image_files[i]['fpath'] for i in framestack]
+    }
+    framestacks_ls.append(framestacks_lib)
+
+print(framestacks_ls)
