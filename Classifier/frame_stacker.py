@@ -1,8 +1,6 @@
 import os
-import imageio
 
 
-## COULD RESTRUCT INTO A CLASS TO PULL SAMPLES AT RUNTIME
 def framestacker(folder_path,skip_frame = 3,frame_stack_len = 3):
     folder_path = folder_path
     skip_frame = skip_frame
