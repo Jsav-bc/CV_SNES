@@ -1,7 +1,8 @@
 import os
+import imageio
 
 
-def framestacker(folder_path,skip_frame = 3,frame_stack_len = 3):
+def framestacker(folder_path,skip_frame = 3,frame_stack_len = 4):
     folder_path = folder_path
     skip_frame = skip_frame
     frame_stack_len = frame_stack_len
@@ -44,3 +45,17 @@ def framestacker(folder_path,skip_frame = 3,frame_stack_len = 3):
         framestacks_ls.append(framestacks_lib)
     
     return framestacks_ls
+
+ls = framestacker("/home/jordan/boot/snesai/CV_SNES/Games_States/0.5698117157520127", skip_frame=3,frame_stack_len=4)
+
+run = 0
+for framestack in ls:
+    run += 1
+    try:
+        os.mkdir(f"/home/jordan/boot/snesai/CV_SNES/Games_States_Gifs/{framestack['event']}")
+    except:
+        pass
+    f_image = []
+    for i in framestack['frame_seq']:
+        f_image.append(imageio.v3.imread(i))
+    imageio.mimsave(f"/home/jordan/boot/snesai/CV_SNES/Games_States_Gifs/{framestack['event']}/{run}_test.gif",f_image)
