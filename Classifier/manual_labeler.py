@@ -2,43 +2,49 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 
-root = Tk()
-root.title("Animated GIF Viewer")
+#set class so that eaiser to label frame dicts at runtime
+#TODO image path as varible and add func to buttons to label stacks
 
-image_path = r"Games_States_Gifs\0.5698117157520127\250_test.gif"
+class gui(Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Manual Labeler")
 
-pil_gif = Image.open(image_path)
+        image_path = r"Games_States_Gifs\0.5698117157520127\250_test.gif"
 
-frames = []
-try:
-    while True:
-        frame = pil_gif.copy()
-        frames.append(ImageTk.PhotoImage(frame))
-        pil_gif.seek(len(frames))  # go to next frame
-except EOFError:
-    pass  # No more frames
+        pil_gif = Image.open(image_path)
 
-frame_count = len(frames)
-frm = ttk.Frame(root, padding=10)
-frm.grid()
+        gframes = []
+        try:
+            while True:
+                gframe = pil_gif.copy()
+                gframes.append(ImageTk.PhotoImage(gframe))
+                pil_gif.seek(len(gframes))
+        except EOFError:
+            pass
 
-label = Label(frm)
-label.grid(column=0, row=0, columnspan=4)
+        frame = ttk.Frame(self, padding=10)
+        frame.grid()
+        
+        label = Label(frame)
+        label.grid()
 
-label.frames = frames
+        label.gframes = gframes
+        
+        frame_count = len(gframes)
+        def update(idx):
+            label.configure(image=gframes[idx])
+            next_idx = (idx + 1)% frame_count
+            self.after(100, update, next_idx)
 
-# Animation loop
-def update(idx):
-    label.configure(image=frames[idx])
-    root.after(100, update, (idx + 1) % frame_count)
+        update(0)
 
-update(0)
+        # Buttons
+        ttk.Button(frame, text="Good",).grid(column=0, row=1)
+        ttk.Button(frame, text="Bad").grid(column=1, row=1)
+        ttk.Button(frame, text="Neutral").grid(column=2, row=1)
+        ttk.Button(frame, text="Win").grid(column=3, row=1)
+        ttk.Button(frame, text="Quit", command=self.destroy).grid(column=0, row=2, columnspan=4)
 
-# Buttons
-ttk.Button(frm, text="Good").grid(column=0, row=1)
-ttk.Button(frm, text="Bad").grid(column=1, row=1)
-ttk.Button(frm, text="Neutral").grid(column=2, row=1)
-ttk.Button(frm, text="Win").grid(column=3, row=1)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=0, row=2, columnspan=4)
-
-root.mainloop()
+app = gui()
+app.mainloop()
